@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
+import { roles } from "../../middleware/auth.js";
 
+
+export const  enumGender= {
+    male : 'male',
+    female : 'female'
+}
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -7,13 +13,14 @@ const userSchema = new mongoose.Schema({
         required:[true , "name is required"],
         lowercase: true,
         minLenght: 3,
-        maxLenght: 10
+        maxLenght: 20,
+        trim:true
     },
     gender:{
         type: String,
         required:true,
-        enum: ['male' ,  'female'],
-        default : 'male'
+        enum: Object.values(enumGender),
+        default : enumGender.male
     },
     phone:{
         type: String,
@@ -24,7 +31,8 @@ const userSchema = new mongoose.Schema({
         required:true,
         lowercase: true,
         unique:true,
-        match:/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+        match:/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/ ,
+        trim:true
     },
     password:{
         type: String,   
@@ -37,9 +45,10 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type : String,
-        enum : ["user" , "admin"],
-        default : "user"
-    }
+        enum : Object.values(roles),
+        default : roles.user
+    },
+    passwordChangeAt : Date
 
 } ,{
     timestamps : true,
